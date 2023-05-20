@@ -23,6 +23,10 @@ class UserServices {
         try {
             // step 1 : fetch the user using the email
             const user = await this.userRepository.getByEmail(email);
+            if(user==null){
+                console.log("User not registered before hand ");
+                throw {error:"Please signup to get logged in"}
+            }
             //step 2 : compare incoming plain password with the encrypted password
             const passwordMatch = await this.checkPassword(plainPassword,user.password);
             if (!passwordMatch){
@@ -35,6 +39,28 @@ class UserServices {
         } 
         catch (error) {
             console.log("Something wrong in user services layer");
+            throw error;
+        }
+    }
+
+    async isAuthenticated (token){
+        try {
+            const response = this.verifyToken(token);   //{email :   , id :   , iat:   , exp:  }
+            if(!response){
+                throw {
+                    error: "Invalid token"
+                }
+            }
+            const user = await this.userRepository.get(response.id);
+            if(!user){
+                throw {
+                    error: "No user exists with the corresponding token"
+                }
+            }
+            return user.id;
+        } 
+        catch (error) {
+            console.log("Something wrong in user services authentication layer");
             throw error;
         }
     }
