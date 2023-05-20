@@ -1,5 +1,7 @@
 const {User} = require('../models/index');
 const user = require('../models/user');
+// const user = require('../models/user');
+// const user = require('../models/user');
 
 class UserRepository {
 
@@ -30,9 +32,26 @@ class UserRepository {
             const user = await User.findByPk(userId, {
                 attributes : ['email', 'id']
             })    
+            return user;
         } 
         catch (error) {
-            
+            console.log("Something wrong in user repo layer")
+            throw error;
+        }
+    }
+
+    async getByEmail (userEmail){
+        try {
+            const user = await User.findOne({
+                where : {
+                    email: userEmail
+                }
+            });
+            return user;    
+        } 
+        catch (error) {
+            console.log("Something wrong in user repo layer")
+            throw error;
         }
     }
 }
