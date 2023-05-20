@@ -1,4 +1,6 @@
 const UserRepository = require('../repository/user-repository');
+const JWT = require("jsonwebtoken");
+const { JWT_KEY } = require('../config/server-config');
 
 class UserServices {
     constructor(){
@@ -16,6 +18,29 @@ class UserServices {
         }
         
     }
+
+    createToken(user) {
+        try {
+            const token = JWT.sign(user, JWT_KEY, {expiresIn:'1h'})
+            return user;
+        } 
+        catch (error) {
+            console.log("Something wrong in token creation");
+            throw error;
+        }
+    }
+
+    verifyToken(token) {
+        try {
+            const response = JWT.verify(token, JWT_KEY)
+            return user;
+        } 
+        catch (error) {
+            console.log("Something wrong in token verificaton",error);
+            throw error;
+        }
+    }
+
 }
 
 module.exports = UserServices
