@@ -3,8 +3,9 @@ const BodyParser = require("body-parser");
 const apiRoutes = require('./routes/index') 
 const {PORT} = require('../src/config/server-config');
 
-const db  = require('./models/index');
-const {User,Role} = require('./models/index')
+// const db  = require('./models/index');
+// const {User,Role} = require('./models/index')
+
 const app = express();  
 
 const prepareAndStartServer = async ()=>{

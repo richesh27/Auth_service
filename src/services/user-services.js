@@ -1,7 +1,8 @@
 const UserRepository = require('../repository/user-repository');
 const JWT = require("jsonwebtoken");
 const { JWT_KEY } = require('../config/server-config');
-const bcrypt  = require("bcrypt")
+const bcrypt  = require("bcrypt");
+const AppErrors = require('../utils/error-handlers');
 
 class UserServices {
     constructor(){
@@ -14,8 +15,16 @@ class UserServices {
             return response;
         } 
         catch (error) {
+            if(error.name == 'SequelizeValidationError'){
+                throw error;
+            }
             console.log("Something wrong in user services layer");
-            throw error;
+            throw new AppErrors(
+                'ServerError',
+                'Something went wrong in Service',
+                'Logical issue found',
+                500
+            );
         }   
     }
 
@@ -93,6 +102,16 @@ class UserServices {
         } 
         catch (error) {
             console.log("Something wrong in password checking",error);
+            throw error;
+        }
+    }
+
+    async isAdmin (userId){
+        try {
+            return this.userRepository.isAdmin(userId)    
+        } 
+        catch (error) {
+            console.log("Something wrong in user service admin layer",error);
             throw error;
         }
     }

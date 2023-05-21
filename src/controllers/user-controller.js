@@ -17,11 +17,11 @@ const create = async (req,res)=>{
     } 
     catch (error) {
         console.log("Something wrong in user controller layer");
-        return res.status(400).json({
+        return res.status(error.StatusCode).json({
             data:{},
             success: false,
-            err:error,
-            message: "Error in creating user"
+            err:error.explanation,
+            message: error.message
         })
     }
 }
@@ -69,8 +69,30 @@ const isAuthenticated = async (req,res)=>{
     }
 }
 
+const isAdmin = async (req,res)=>{
+    try {
+        const response = await userService.isAdmin(req.body.id);
+        return res.status(200).json({
+            success:true,
+            err:{},
+            data: response,
+            message : "User authorised for admin role or not is successfully fetched"
+        })
+    } 
+    catch (error) {
+        console.log("Something wrong in user controller IsAdmin layer");
+        return res.status(400).json({
+            data:{},
+            success: false,
+            err:error,
+            message: "User is not an Admin"
+        })
+    }
+}
+
 module.exports = {
     create,
     signIn,
-    isAuthenticated         
+    isAuthenticated,
+    isAdmin      
 }
